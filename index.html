@@ -145,6 +145,75 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/06/03/%E5%85%B3%E4%BA%8E%E6%9F%AF%E9%87%8C%E5%8C%96%E7%9A%84%E8%AE%A4%E8%AF%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="九州白">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Nekoの小酒馆">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/06/03/%E5%85%B3%E4%BA%8E%E6%9F%AF%E9%87%8C%E5%8C%96%E7%9A%84%E8%AE%A4%E8%AF%86/" class="post-title-link" itemprop="url">关于柯里化的认识</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-06-03 21:57:47" itemprop="dateCreated datePublished" datetime="2022-06-03T21:57:47+08:00">2022-06-03</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-06-04 11:57:59" itemprop="dateModified" datetime="2022-06-04T11:57:59+08:00">2022-06-04</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="柯里化用处"><a href="#柯里化用处" class="headerlink" title="柯里化用处"></a>柯里化用处</h2><p>可分批次接受多个参数</p>
+<h2 id="柯里化例子"><a href="#柯里化例子" class="headerlink" title="柯里化例子"></a>柯里化例子</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">curry</span>(<span class="params">fn,arr=[]</span>)&#123;</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> add = <span class="title function_">curry</span>(<span class="function">(<span class="params">a,b,c</span>)=&gt;</span>a+b+c)</span><br><span class="line"><span class="title function_">add</span>(<span class="number">1</span>)(<span class="number">2</span>)(<span class="number">3</span>) <span class="comment">// 6</span></span><br><span class="line"><span class="title function_">add</span>(<span class="number">1</span>,<span class="number">2</span>)(<span class="number">3</span>)  <span class="comment">// 6</span></span><br><span class="line"><span class="title function_">add</span>(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>)   <span class="comment">// 6</span></span><br><span class="line"><span class="title function_">add</span>(<span class="number">1</span>)(<span class="number">2</span>,<span class="number">3</span>)  <span class="comment">// 6</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="具体实现"><a href="#具体实现" class="headerlink" title="具体实现"></a>具体实现</h2><h3 id="实现思路"><a href="#实现思路" class="headerlink" title="实现思路"></a>实现思路</h3><p>根据例子可以看出柯里化会返回值或者函数<br>需要判断什么时候返回值，什么时候返回函数<br>可利用函数的长度表示参数个数来实现判断</p>
+<h3 id="具体代码"><a href="#具体代码" class="headerlink" title="具体代码"></a>具体代码</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">curry</span>(<span class="params">fn, arr = []</span>) &#123;</span><br><span class="line">	<span class="comment">// argus表示单次传入的参数</span></span><br><span class="line">	<span class="keyword">return</span> <span class="function">(<span class="params">...argus</span>) =&gt;</span> &#123;</span><br><span class="line">		<span class="keyword">if</span> ([...arr, ...argus].<span class="property">length</span> == fn.<span class="property">length</span>) &#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="title function_">fn</span>(...arr, ...argus)</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="title function_">curry</span>(fn, [...arr, ...argus])</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 比如要知道3个数累加的值</span></span><br><span class="line"><span class="keyword">var</span> add = <span class="title function_">curry</span>(<span class="function">(<span class="params">a, b, c</span>) =&gt;</span> a + b + c)</span><br><span class="line"><span class="title function_">add</span>(<span class="number">1</span>)(<span class="number">2</span>)(<span class="number">3</span>) <span class="comment">// 6</span></span><br><span class="line"><span class="title function_">add</span>(<span class="number">1</span>, <span class="number">2</span>)(<span class="number">3</span>) <span class="comment">// 6</span></span><br><span class="line"><span class="title function_">add</span>(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>) <span class="comment">// 6</span></span><br><span class="line"><span class="title function_">add</span>(<span class="number">1</span>)(<span class="number">2</span>, <span class="number">3</span>) <span class="comment">// 6</span></span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2022/05/29/firstBlog/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -395,12 +464,12 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">2</span>
+          <span class="site-state-item-count">3</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-count">2</span>
         <span class="site-state-item-name">标签</span>
       </div>
   </nav>
